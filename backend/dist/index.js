@@ -1,0 +1,22 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+require("dotenv/config");
+const express_1 = __importDefault(require("express"));
+const cors_1 = __importDefault(require("cors"));
+const ws_1 = require("ws");
+const user_1 = __importDefault(require("./routers/user"));
+const chat_1 = __importDefault(require("./routers/chat"));
+const ws_2 = __importDefault(require("./routers/ws"));
+const worker_1 = __importDefault(require("./routers/worker"));
+const wsServer = new ws_1.WebSocketServer({ port: 8080 });
+const app = (0, express_1.default)();
+app.use(express_1.default.json());
+app.use((0, cors_1.default)());
+app.use('/', (0, ws_2.default)(wsServer));
+app.use('/v1/user', user_1.default);
+app.use('/v1/chat', chat_1.default);
+app.listen(8000, () => console.log('Server running at port 8000'));
+(0, worker_1.default)();
