@@ -30,6 +30,14 @@ export const Landing = () =>{
                 roomPassword,
                 authToken
             });
+
+            // `${import.meta.env.VITE_BACKEND_URL}/v1/chat/create/room`, 
+            //     { roomPassword},
+            //     {
+            //         headers: {
+            //             'Authorization': `Bearer ${authToken}`
+            //         }
+            //     }
             Cookies.set('roomIdToken', response.data.roomIdToken);
             setRoomId((response.data.roomId).toString());
             setTimeout(() =>{

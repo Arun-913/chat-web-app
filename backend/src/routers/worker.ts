@@ -37,7 +37,6 @@ async function Worker(){
 
         while(1){
             const temp:{key:string, element:string} | null = await redisClient.brPop('PushIntoDB', 0);
-            console.log(temp);
             
             PushDataIntoDB(temp);
         }

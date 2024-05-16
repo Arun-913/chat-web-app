@@ -2,13 +2,15 @@ import axios, { AxiosError } from "axios";
 import { useState } from "react";
 import Cookies from 'js-cookie';
 import { useNavigate } from "react-router-dom";
+import ReCAPTCHA from "react-google-recaptcha";
 
 export const SignIn = () =>{
     const [email, setEmail] =  useState<string>('');
     const [password, setPassword] =  useState<string>('');
     const [error, setError] = useState<string>('');
     const navigate = useNavigate();
-
+    const [verified, setVerified] = useState<boolean>(false);
+    
 
     const handelOnClick = async(event: React.FormEvent) =>{
         event?.preventDefault();
@@ -43,6 +45,18 @@ export const SignIn = () =>{
         }
     }
 
+    // @ts-ignore
+    async function onChange(recaptchaResponse) {;
+        const response = await axios.get(`/api/recaptcha/api/siteverify?secret=${import.meta.env.VITE_GOOGLE_SECRET_KEY}&response=${recaptchaResponse}`);
+        console.log(response);
+        if(response.data.success === true){
+            setVerified(true);
+        }
+        else{
+            setError('You are not a legismate user');
+        }
+    }
+
     return (
         <>
             <form className="h-screen flex justify-center items-center" onSubmit={handelOnClick}>
@@ -63,8 +77,13 @@ export const SignIn = () =>{
                             className="rounded border-2 border-black m-2 whitespace p-1"
                             type="password" placeholder="Enter password" />
                     </div>
+                    <ReCAPTCHA
+                        className="m-2"
+                        sitekey={import.meta.env.VITE_GOOGLE_SITE_KEY}
+                        onChange={onChange}
+                    />
                     <div className="flex justify-center items-center">
-                        <button className="rounded border-2 border-black p-1" type="submit">Signin</button>
+                        <button className="h-14 text-lg rounded-lg border-2 m-6 w-20 bg-indigo-500" style={{color:"white"}} type="submit" disabled={!verified}>Signin</button>
                     </div>
                     {error && <p className="text-red-500">{error}</p>}
                 </div>

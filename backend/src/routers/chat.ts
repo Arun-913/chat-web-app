@@ -131,8 +131,6 @@ router.post('/post', [authMiddleware, roomIdMiddleware], async(req:Request, res:
             roomId
         }
     });
-
-    // console.log(roomExist);
     
     if(roomExist){
         // @ts-ignore
@@ -169,7 +167,7 @@ router.post('/post', [authMiddleware, roomIdMiddleware], async(req:Request, res:
     }
 });
 
-router.get('/fetch', [authMiddleware, roomIdMiddleware], async(req:Request, res: Response) =>{
+router.post('/fetch', [authMiddleware, roomIdMiddleware], async(req:Request, res: Response) =>{
     // @ts-ignore
     const roomId:number = req.roomId, roomPassword:string = req.roomPassword;
     const roomExist = await prismaClient.chatRoom.findFirst({
